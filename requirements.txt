@@ -3,3 +3,8 @@ Django
 
 # gunicorn is needed by Heroku to launch the web server
 gunicorn
+
+# necessary pip commands
+pip install django-allauth
+pip install requests
+pip install jwt
