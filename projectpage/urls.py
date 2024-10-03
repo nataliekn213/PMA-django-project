@@ -5,11 +5,6 @@ from . import views
 app_name = "projectpage"
 urlpatterns = [
     path("", views.index, name="index"),
-    path("dashboard/", views.dashboard, name="dashboard"), 
-    # path('accounts/', include('allauth.urls')),
-]
-
-app_name = "account"
-urlpatterns = [
-    path("login/", views.login, name="login"),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("account/login", views.login, name="login") 
 ]
