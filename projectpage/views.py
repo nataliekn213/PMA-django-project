@@ -5,7 +5,7 @@ def index(request):
     return render(request, 'projectpage/index.html')
 
 def login(request):
-    return render(request, 'projectpage/login.html')
+    return render(request, 'account/login.html')
 
 def dashboard(request):
     return render(request, 'projectpage/dashboard.html')
