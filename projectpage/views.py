@@ -9,3 +9,9 @@ def login(request):
 
 def dashboard(request):
     return render(request, 'projectpage/dashboard.html')
+
+def admin_dashboard(request):
+    return render(request, 'projectpage/admin_dashboard.html')
+
+def admin_login(request):
+    return render(request, "account/admin_login.html")
