@@ -41,3 +41,8 @@ class AddView(generic.CreateView):
     template_name = "projectpage/add_task.html"
 
     success_url = reverse_lazy("projectpage:dashboard")
+
+class TaskListView(generic.ListView):
+    model = Task
+    template_name = "projectpage/task_list.html"
+    context_object_name = "task_list"

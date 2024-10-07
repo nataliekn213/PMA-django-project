@@ -6,5 +6,6 @@
     <p>Logged in as ADMIN: {{ user_id }}</p>
     <p>Welcome to the dashboard, {{ full_name }}!</p>
 
-    <a href="{% url 'projectpage:add_task' %}">Add Task</a>
+    <a href="{% url 'projectpage:add_task' %}">Add Task</a> <br>
+    <a href="{% url 'projectpage:task_list' %}">View Tasks</a>
 </body>

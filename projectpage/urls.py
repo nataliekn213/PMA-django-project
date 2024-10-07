@@ -10,4 +10,5 @@ urlpatterns = [
     path("account/admin_login", views.admin_login, name="admin_login"),
     path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("dashboard/add_task", views.AddView.as_view(), name="add_task"),
+    path("dashboard/task_list", views.TaskListView.as_view(), name="task_list"),
 ]
