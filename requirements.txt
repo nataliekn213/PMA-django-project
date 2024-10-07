@@ -10,4 +10,3 @@ python-dotenv
 # Packages needed for Google Auth
 django-allauth
 requests
-pyjwt
