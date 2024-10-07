@@ -1,5 +1,9 @@
 <body>
     <h1>Team B-05 Project Page</h1>
     
-    <p>adding a task here!!</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Task</button>
+    </form>
 </body>

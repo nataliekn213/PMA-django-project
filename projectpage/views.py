@@ -1,5 +1,9 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.views import generic
+from django.urls import reverse, reverse_lazy
+
+from .models import Task
+from .forms import TaskForm
 
 # Create your views here.
 def index(request):
@@ -29,5 +33,11 @@ def admin_dashboard(request):
 def admin_login(request):
     return render(request, "account/admin_login.html")
 
-def add_task(request):
-    return render(request, 'projectpage/add_task.html')
+# def add_task(request):
+#     return render(request, 'projectpage/add_task.html')
+
+class AddView(generic.CreateView):
+    form_class = TaskForm
+    template_name = "projectpage/add_task.html"
+
+    success_url = reverse_lazy("projectpage:dashboard")
