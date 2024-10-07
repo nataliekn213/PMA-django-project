@@ -11,4 +11,5 @@ urlpatterns = [
     path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("dashboard/add_task", views.AddView.as_view(), name="add_task"),
     path("dashboard/task_list", views.TaskListView.as_view(), name="task_list"),
+    path("task/delete/<int:task_id>/", views.delete_task, name="delete_task"),
 ]

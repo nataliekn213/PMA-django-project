@@ -7,5 +7,12 @@
     <p>Welcome to the dashboard, {{ full_name }}!</p>
 
     <a href="{% url 'projectpage:add_task' %}">Add Task</a> <br>
-    <a href="{% url 'projectpage:task_list' %}">View Tasks</a>
+    <h2>Task List:</h2>
+    <ul>
+        {% for task in task_list %}
+            <li>{{ task.task_title }} -- {{ task.deadline }} -- <a href="{% url 'projectpage:delete_task' task.id %}">Remove</a></li>
+        {% empty %}
+            <li>No tasks yet.</li>
+        {% endfor %}
+    </ul>
 </body>

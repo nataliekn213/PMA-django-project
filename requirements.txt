@@ -11,4 +11,4 @@ python-dotenv
 django-allauth
 requests
 jwt
-PyJWT
+PyJWT==2.8.0
