@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -8,10 +9,22 @@ def login(request):
     return render(request, 'account/login.html')
 
 def dashboard(request):
-    return render(request, 'projectpage/dashboard.html')
+    user_id = request.user
+    full_name = request.user.get_full_name()
+    context = {
+        "full_name" : full_name,
+        "user_id" : user_id,
+    }
+    return render(request, 'projectpage/dashboard.html', context)
 
 def admin_dashboard(request):
-    return render(request, 'projectpage/admin_dashboard.html')
+    user_id = request.user
+    full_name = request.user.get_full_name()
+    context = {
+        "full_name" : full_name,
+        "user_id" : user_id,
+    }
+    return render(request, 'projectpage/admin_dashboard.html', context)
 
 def admin_login(request):
     return render(request, "account/admin_login.html")
