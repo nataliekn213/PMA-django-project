@@ -15,3 +15,6 @@ def admin_dashboard(request):
 
 def admin_login(request):
     return render(request, "account/admin_login.html")
+
+def add_task(request):
+    return render(request, 'projectpage/add_task.html')
