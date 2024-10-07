@@ -34,13 +34,14 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','project-b-05-b17b7c166791.herokuapp.co
 # Application definition
 
 INSTALLED_APPS = [
+    'projectpage.apps.ProjectpageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'projectpage',
+    # 'projectpage',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
