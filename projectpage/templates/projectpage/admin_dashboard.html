@@ -1,0 +1,11 @@
+<body>
+    <h1>Team B-05 Project Page</h1>
+    <h2>Currently W.I.P</h2>
+    <h3>This will be the admin dashboard page</h3>
+
+    <p>Logged in as ADMIN: {{ user_id }}</p>
+    <p>Welcome to the dashboard, {{ full_name }}!</p>
+
+    <a href="{% url 'projectpage:add_task' %}">Add Task</a> <br>
+    <a href="{% url 'projectpage:task_list' %}">View Tasks</a>
+</body>

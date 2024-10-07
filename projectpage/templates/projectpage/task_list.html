@@ -1,0 +1,10 @@
+<body>
+    <h1>Task List</h1>
+    <ul>
+        {% for task in task_list %}
+            <li>{{ task.task_title }} -- {{ task.deadline }}</li>
+        {% empty %}
+            <li>No tasks yet.</li>
+        {% endfor %}
+    </ul>
+</body>
