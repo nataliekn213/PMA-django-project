@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'projectpage',
     'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
+    #'allauth.socialaccount.providers.google',
+    'social_django',
 ]
 
 SITE_ID = 1
@@ -59,7 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    # 'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -75,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -93,25 +96,34 @@ DATABASES = {
     }
 }
 
+#AUTHENTICATION_BACKENDS = [
+#    'django.contrib.auth.backends.ModelBackend',
+#    'allauth.account.auth_backends.AuthenticationBackend',
+#]
+
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'APP': {
-            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
-            'secret': os.getenv('GOOGLE_SECRET_KEY'),
-            'key': ''
-        }
-    }
-}
+#SOCIALACCOUNT_PROVIDERS = {
+#    'google': {
+#        'SCOPE': ['profile', 'email'],
+#        'AUTH_PARAMS': {'access_type': 'online'},
+#        'APP': {
+#            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+#            'secret': os.getenv('GOOGLE_SECRET_KEY'),
+#            'key': ''
+#        }
+#    }
+#}
 
-LOGIN_REDIRECT_URL = '/projectpage/dashboard'  # or wherever you'd like to redirect after login
-LOGOUT_REDIRECT_URL = '/projectpage/account/login'
+#LOGIN_REDIRECT_URL = '/projectpage/dashboard'  # or wherever you'd like to redirect after login
+#LOGOUT_REDIRECT_URL = '/projectpage/account/login'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_SECRET_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/complete/google-oauth2/'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
