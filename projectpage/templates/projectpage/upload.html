@@ -1,0 +1,36 @@
+<body>
+    <h1>Team B-05 Project Page</h1>
+    <h2>Upload File:</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="file" name="file" accept=".txt, .pdf, .jpg">
+        <button type="submit">Upload</button>
+    </form>
+    <br>
+    {% if file_url %}
+        {% if file_extension == 'pdf' %}
+            <embed
+                src="{{ file_url }}"
+                type="application/pdf"
+                frameBorder="0"
+                scrolling="auto"
+                height="100%"
+                width="100%"
+            ></embed>
+        {% elif file_extension == 'txt' %}
+            <embed
+                src="{{ file_url }}"
+                type="text/plain"
+                frameBorder="0"
+                scrolling="auto"
+                height="100%"
+                width="100%"
+            ></embed>
+        {% elif file_extension == 'jpg' %}
+            <img src="{{ file_url }}" alt="Uploaded Image"></img>
+        {% endif %}
+        <p>File uploaded at: <a href="{{ file_url }}">{{ file_url }}</a></p>
+    {% endif %}
+</body>
