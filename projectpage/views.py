@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'projectpage/index.html')
 
 def login(request):
-    return render(request, 'account/login.html')
+    return render(request, 'registration/login.html')
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -58,7 +58,7 @@ def delete_task(request, task_id):
     return redirect('projectpage:admin_dashboard')
 
 def admin_login(request):
-    return render(request, "account/admin_login.html")
+    return render(request, "registration/admin_login.html")
 
 # def add_task(request):
 #     return render(request, 'projectpage/add_task.html')

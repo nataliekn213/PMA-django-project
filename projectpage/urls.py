@@ -1,15 +1,17 @@
 from django.urls import path, include
-
+from django.contrib.auth import views as auth_views
 from . import views
 
 app_name = "projectpage"
 urlpatterns = [
     path("", views.index, name="index"),
     path("dashboard/", views.dashboard, name="dashboard"),
-    path("account/login", views.login, name="login"),
-    path("account/admin_login", views.admin_login, name="admin_login"),
+    path("registration/login", views.login, name="login"),
+    path("registration/admin_login", views.admin_login, name="admin_login"),
     path("admin_dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("dashboard/add_task", views.AddView.as_view(), name="add_task"),
     path("dashboard/task_list", views.TaskListView.as_view(), name="task_list"),
     path("task/delete/<int:task_id>/", views.delete_task, name="delete_task"),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('login/', auth_views.LoginView.as_view(), name="login"),
 ]
