@@ -17,7 +17,10 @@ class DocumentForm(forms.ModelForm):
         file = self.cleaned_data.get('file')
         if file:
             allowed_extensions = ['txt', 'pdf', 'jpg']
-            extension = file.split('.')[-1].lower()
+            file_name = file.name
+            # print(file_name)
+            extension = file_name.split('.')[-1].lower()
+            # print(extension)
             if extension not in allowed_extensions:
                 raise forms.ValidationError("Only .txt, .pdf, and .jpg files are allowed.")
         return file
