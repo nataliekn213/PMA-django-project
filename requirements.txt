@@ -10,3 +10,7 @@ python-dotenv
 # Packages needed for Google Auth
 social-auth-app-django
 requests
+
+# Packages needed for AWS S3
+boto3 
+django-storages
