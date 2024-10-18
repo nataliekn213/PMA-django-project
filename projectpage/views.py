@@ -74,17 +74,20 @@ def upload(request):
             file_name = file.name
             file_extension = file_name.split('.')[-1].lower()  # Get the file extension
             if settings.USE_S3:
-                document = Document(file=file)
-                document.save()
-                file_url = document.file.url
-                print(file_url)
+                try:
+                    document = Document(file=file)
+                    document.save()
+                    file_url = document.file.url
+                    # print(file_url)
+                except Exception as e:
+                    print(e)
             # else:
             #     fs = FileSystemStorage()
             #     filename = fs.save(file.name, file)
             #     file_url = fs.url(filename)
-            return render(request, 'projectpage/upload.html', {
-                'file_url': file_url, 'file_extension': file_extension,
-            })
+                return render(request, 'projectpage/upload.html', {
+                    'file_url': file_url, 'file_extension': file_extension,
+                })
     else:
         form = DocumentForm()
     return render(request, 'projectpage/upload.html')
