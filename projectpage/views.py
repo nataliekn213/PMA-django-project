@@ -4,9 +4,11 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from functools import wraps
+from django.conf import settings
+from django.core.files.storage import default_storage
 
-from .models import Task
-from .forms import TaskForm
+from .models import Task, Document
+from .forms import TaskForm, DocumentForm
 
 # Create your views here.
 def index(request):
@@ -62,6 +64,30 @@ def admin_login(request):
 
 # def add_task(request):
 #     return render(request, 'projectpage/add_task.html')
+
+@login_required
+def upload(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['file']
+            file_name = file.name
+            file_extension = file_name.split('.')[-1].lower()  # Get the file extension
+            if settings.USE_S3:
+                document = Document(file=file)
+                document.save()
+                file_url = document.file.url
+                print(file_url)
+            # else:
+            #     fs = FileSystemStorage()
+            #     filename = fs.save(file.name, file)
+            #     file_url = fs.url(filename)
+            return render(request, 'projectpage/upload.html', {
+                'file_url': file_url, 'file_extension': file_extension,
+            })
+    else:
+        form = DocumentForm()
+    return render(request, 'projectpage/upload.html')
 
 class AddView(generic.CreateView):
     form_class = TaskForm

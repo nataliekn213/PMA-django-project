@@ -8,6 +8,7 @@
 
     <a href="{% url 'projectpage:add_task' %}">Add Task</a> <br>
     <a href="{% url 'projectpage:task_list' %}">View Tasks</a> <br>
+    <a href="{% url 'projectpage:upload' %}">Upload File</a> <br>
     <!--<a href="{% url 'logout'%}">Logout</a> <br> -->
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
