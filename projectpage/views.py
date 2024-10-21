@@ -9,6 +9,9 @@ from django.core.files.storage import default_storage
 
 from .models import Task, Document
 from .forms import TaskForm, DocumentForm
+from django.http import JsonResponse
+
+
 
 # Create your views here.
 def index(request):
@@ -91,6 +94,15 @@ def upload(request):
     else:
         form = DocumentForm()
     return render(request, 'projectpage/upload.html')
+
+@login_required
+@admin_required
+def complete_task(request, task_id):
+    if request.method == "POST":
+        task = get_object_or_404(Task, id=task_id)
+        task.is_completed = not task.is_completed
+        task.save()
+        return JsonResponse({'success': True, 'is_completed': task.is_completed})
 
 class AddView(generic.CreateView):
     form_class = TaskForm
