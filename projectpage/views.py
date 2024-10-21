@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -78,7 +78,7 @@ def upload(request):
                     document = Document(file=file)
                     document.save()
                     file_url = document.file.url
-                    # print(file_url)
+                    print(f"FILE URL: {file_url}")
                 except Exception as e:
                     print(e)
             # else:
