@@ -35,8 +35,19 @@ class AdminStuff(TestCase):
 
         response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "admin dashboard")
 
 class TaskDeletion(TestCase):
     def setUp(self):
-        self.admin = User.objects.create_superuser("admin", "test@test.com", "password")
-        task = Task.objects.create(task_title="test_title", deadline=datetime.datetime.today())
+        self.admin = User.objects.create_superuser("admin", "test_admin@test.com", "password")
+        to_delete = Task.objects.create(task_title="test_title", deadline=datetime.datetime.today())
+
+    def test_delete_task(self):
+        admin_login = self.client.login(username="admin", password="password")
+        response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
+        # before deletion
+        self.assertContains(response, "test_title")
+
+        # self.client.get(reverse_lazy("projectpage:task/delete/1/"))
+        # after deletion
+        # self.assertNotContains(response, "test_title")
