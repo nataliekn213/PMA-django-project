@@ -1,10 +1,5 @@
 name: Django CI
 
-env:
-  ${{secrets.DJANGO_SECRET_KEY}}
-  ${{secrets.GOOGLE_SECRET_KEY}}
-  ${{secrets.GOOGLE_CLIENT_ID}}
-
 on:
   push:
     branches: [ "main" ]
@@ -31,5 +26,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
+      env:
+          DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
+          GOOGLE_SECRET_KEY: ${{secrets.GOOGLE_SECRET_KEY}}
+          GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
       run: |
+        echo "Using secret value $DJANGO_SECRET_KEY"
+        echo "Using secret value $GOOGLE_SECRET_KEY"
+        echo "Using secret value $GOOGLE_CLIENT_ID"
         python manage.py test
