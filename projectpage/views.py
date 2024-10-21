@@ -78,7 +78,7 @@ def upload(request):
                     document = Document(file=file)
                     document.save()
                     file_url = document.file.url
-                    print(f"FILE URL: {file_url}")
+                    # print(file_url)
                 except Exception as e:
                     print(e)
             # else:

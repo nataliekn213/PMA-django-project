@@ -1,13 +1,22 @@
 from django.test import TestCase
-from datetime import datetime
+import datetime
 from django.utils import timezone
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.models import User
 
 from .models import Task
 
-class TaskModelTests(TestCase):
-    def task_testing(self):
+class TaskCreation(TestCase):
+    def test_task_creation(self):
         test_deadline = timezone.now() + datetime.timedelta(days=7)
-        task = Task(task_title="test_title", deadline=test_deadline)
+        Task.objects.create(task_title="test_title", deadline=test_deadline)
 
-        response = self.client.get()
+        response = self.client.get(reverse_lazy("projectpage:task_list"))
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "projectpage/task_list.html")
+        self.assertContains(response, "test_title")
+    
+class TaskDeletion(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser("admin", "test@test.com", "password")
