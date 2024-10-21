@@ -7,6 +7,16 @@ on:
     branches: [ "main" ]
 
 jobs:
+  create-envfile:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        envkey_GOOGLE_SECRET_KEY: ${{ secrets.GOOGLE_SECRET_KEY }}
+        envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        file_name: .env
   build:
 
     runs-on: ubuntu-latest
@@ -26,12 +36,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
-      env:
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          GOOGLE_SECRET_KEY: ${{ secrets.GOOGLE_SECRET_KEY }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       run: |
-        echo "Using secret value $DJANGO_SECRET_KEY"
-        echo "Using secret value $GOOGLE_SECRET_KEY"
-        echo "Using secret value $GOOGLE_CLIENT_ID"
         python manage.py test
