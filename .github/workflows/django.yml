@@ -13,10 +13,13 @@ jobs:
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
+        envkey_DEBUG: false
         envkey_DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         envkey_GOOGLE_SECRET_KEY: ${{ secrets.GOOGLE_SECRET_KEY }}
         envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         file_name: .env
+        fail_on_empty: false
+        sort_keys: false
   build:
 
     runs-on: ubuntu-latest
