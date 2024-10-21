@@ -1,5 +1,10 @@
 name: Django CI
 
+env:
+  ${{secrets.DJANGO_SECRET_KEY}}
+  ${{secrets.GOOGLE_SECRET_KEY}}
+  ${{secrets.GOOGLE_CLIENT_ID}}
+
 on:
   push:
     branches: [ "main" ]
