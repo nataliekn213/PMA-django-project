@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -23,7 +23,7 @@ def login(request):
 def admin_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        admin_emails = ["iurivintonyak@gmail.com", "aadarsh.natarajan@gmail.com", "nataliekn213@gmail.com", "nouraalghamdi10@gmail.com", "ccook6387@gmail.com"]
+        admin_emails = ["iurivintonyak@gmail.com", "aadarsh.natarajan@gmail.com", "nataliekn213@gmail.com", "nouraalghamdi10@gmail.com", "ccook6387@gmail.com", "test_admin@test.com"]
         # print("Logged in user:", request.user)
         # print("Email:", request.user.email)
         if request.user.email in admin_emails:
