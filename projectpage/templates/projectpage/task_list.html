@@ -1,12 +1,11 @@
 <head>
     <style>
-        /* General styling for the task list */
         .task-list {
             margin: 20px;
             padding: 0;
             list-style-type: none;
         }
-
+    
         .task-item {
             margin-bottom: 20px;
             padding: 10px;
@@ -15,49 +14,69 @@
             background-color: #f9f9f9;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center;  
         }
-
+    
         .task-title {
             font-size: 1.2em;
             font-weight: bold;
         }
-
+    
         .task-deadline {
             color: #555;
             margin-left: 10px;
         }
-
-        /* Styling for the checkbox */
+    
         .task-checkbox {
             width: 20px;
             height: 20px;
             cursor: pointer;
+            margin-right: 10px;  
         }
+    
+        .delete-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    
         .back-button {
             display: inline-block;
             margin: 20px 0;
             padding: 8px 16px;
-            background-color: #6c757d; /* Grey color */
+            background-color: #6c757d; 
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 14px; /* Smaller size */
+            font-size: 14px; 
             text-align: center;
         }
-
+    
         .back-button:hover {
-            background-color: #5a6268; /* Darker grey on hover */
+            background-color: #5a6268; 
+        }
+    
+        .task-controls {
+            display: flex;
+            align-items: center;
         }
     </style>
     
-    <!-- Add jQuery for easy AJAX handling -->
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Handle the form submission via AJAX
         $(document).ready(function() {
             $('.complete-task-form').on('submit', function(event) {
-                event.preventDefault();  // Prevent the form from submitting normally
+                event.preventDefault();  
 
                 var form = $(this);  
                 $.ajax({
@@ -92,11 +111,17 @@
                     <span class="task-title">{{ task.title }}</span>
                     <span class="task-deadline"> -- {{ task.deadline }}</span>
                 </div>
-                <div>
+                <div class="task-controls">
                     <!-- Checkbox to mark task as completed or not completed, using AJAX -->
                     <form action="{% url 'projectpage:complete_task' task.id %}" method="post" class="complete-task-form" style="display:inline;">
                         {% csrf_token %}
                         <input type="checkbox" class="task-checkbox" {% if task.is_completed %}checked{% endif %}>
+                    </form>
+    
+                    <!-- Delete Task Button -->
+                    <form action="{% url 'projectpage:delete_task' task.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button">Delete</button>
                     </form>
                 </div>
             </li>
@@ -104,6 +129,7 @@
             <li>No tasks yet.</li>
         {% endfor %}
     </ul>
+    
 
     <a href="{% url 'projectpage:dashboard' %}" class="back-button">Back to Dashboard</a>
 </body>
