@@ -6,6 +6,9 @@
         {% csrf_token %}
         {{ form.as_p }}
         <input type="file" name="file" accept=".txt, .pdf, .jpg">
+        <input type="title" name="title" placeholder="Title" maxlength="50">
+        <input type="description" name="description" placeholder="Description" maxlength="150">
+        <input type="keywords" name="keywords" placeholder="Keywords">
         <br><br>
         <button type="submit">Upload</button>
     </form>

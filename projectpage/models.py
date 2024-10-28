@@ -10,4 +10,11 @@ class Task(models.Model):
 
 class Document(models.Model):
     file = models.FileField(storage=S3Boto3Storage(), upload_to='documents/')
+    title = models.CharField(max_length=50, default="No title")
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=150, default="No description")
+    keywords = models.TextField(default="No keywords")
+
+    def __str__(self):
+        return f'''{self.title} uploaded on {self.uploaded_at} to {self.file.url}, 
+        with description {self.description} and keywords: {self.keywords}'''

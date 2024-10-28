@@ -75,10 +75,11 @@ def upload(request):
             file_extension = file_name.split('.')[-1].lower()  # Get the file extension
             if settings.USE_S3:
                 try:
-                    document = Document(file=file)
+                    document = Document(file=file, title=form.cleaned_data['title'], description=form.cleaned_data['description'], keywords=form.cleaned_data['keywords'])
                     document.save()
                     file_url = document.file.url
                     # print(file_url)
+                    print(document)
                 except Exception as e:
                     print(e)
             # else:
