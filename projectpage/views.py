@@ -60,7 +60,7 @@ def admin_dashboard(request):
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
-    return redirect('projectpage:admin_dashboard')
+    return redirect('projectpage:task_list')
 
 def admin_login(request):
     return render(request, "registration/admin_login.html")
@@ -103,6 +103,8 @@ def complete_task(request, task_id):
         task.is_completed = not task.is_completed
         task.save()
         return JsonResponse({'success': True, 'is_completed': task.is_completed})
+
+
 
 class AddView(generic.CreateView):
     form_class = TaskForm
