@@ -104,6 +104,16 @@ def complete_task(request, task_id):
         task.save()
         return JsonResponse({'success': True, 'is_completed': task.is_completed})
 
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.title = request.POST.get('title', task.title)
+        task.deadline = request.POST.get('deadline', task.deadline)
+        task.save()
+        return redirect('projectpage:task_list')
+
+
 
 
 class AddView(generic.CreateView):

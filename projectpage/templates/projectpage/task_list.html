@@ -5,99 +5,130 @@
             padding: 0;
             list-style-type: none;
         }
-    
+
         .task-item {
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
             background-color: #f9f9f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;  
         }
-    
+
+        .task-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .task-title {
             font-size: 1.2em;
             font-weight: bold;
         }
-    
+
         .task-deadline {
             color: #555;
             margin-left: 10px;
         }
-    
+
+        .task-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .task-checkbox {
             width: 20px;
             height: 20px;
             cursor: pointer;
-            margin-right: 10px;  
+            margin-right: 10px;
         }
-    
-        .delete-button {
-            margin-left: 10px;
+
+        .delete-button,
+        .edit-button {
             padding: 5px 10px;
-            background-color: #dc3545;
-            color: white;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            display: inline-block;
+            vertical-align: middle;
         }
-    
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
         .delete-button:hover {
             background-color: #c82333;
         }
-    
+
+        .edit-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+
         .back-button {
             display: inline-block;
             margin: 20px 0;
             padding: 8px 16px;
-            background-color: #6c757d; 
+            background-color: #6c757d;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 14px; 
+            font-size: 14px;
             text-align: center;
         }
-    
+
         .back-button:hover {
-            background-color: #5a6268; 
+            background-color: #5a6268;
         }
-    
-        .task-controls {
-            display: flex;
-            align-items: center;
+
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
         }
     </style>
-    
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.complete-task-form').on('submit', function(event) {
-                event.preventDefault();  
-
-                var form = $(this);  
+                event.preventDefault();
+                var form = $(this);
                 $.ajax({
                     type: form.attr('method'),
                     url: form.attr('action'),
-                    data: form.serialize(),  
+                    data: form.serialize(),
                     success: function(response) {
                         if (response.is_completed) {
-                            form.find('.task-checkbox').prop('checked', true);  
+                            form.find('.task-checkbox').prop('checked', true);
                         } else {
-                            form.find('.task-checkbox').prop('checked', false);  
+                            form.find('.task-checkbox').prop('checked', false);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('AJAX Error:', status, error);  
+                        console.error('AJAX Error:', status, error);
                     }
                 });
             });
 
             $('.task-checkbox').on('change', function() {
-                $(this).closest('form').submit();  
+                $(this).closest('form').submit();
+            });
+
+            $('.edit-button').on('click', function() {
+                var taskId = $(this).data('task-id');
+                $('#edit-form-' + taskId).toggle();
             });
         });
     </script>
@@ -106,22 +137,44 @@
     <h1>Task List</h1>
     <ul class="task-list">
         {% for task in task_list %}
+        <div>
             <li class="task-item">
-                <div>
+                <div class="task-details">
+                    <form action="{% url 'projectpage:complete_task' task.id %}" method="post" class="complete-task-form" style="display:inline;">
+
+                        {% csrf_token %}
+                
+                        <input type="checkbox" class="task-checkbox" {% if task.is_completed %}checked{% endif %}>
+                    </form>
                     <span class="task-title">{{ task.title }}</span>
                     <span class="task-deadline"> -- {{ task.deadline }}</span>
                 </div>
+
+                <div>
                 <div class="task-controls">
-                    <!-- Checkbox to mark task as completed or not completed, using AJAX -->
-                    <form action="{% url 'projectpage:complete_task' task.id %}" method="post" class="complete-task-form" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="checkbox" class="task-checkbox" {% if task.is_completed %}checked{% endif %}>
-                    </form>
-    
-                    <!-- Delete Task Button -->
+                    <button type="button" class="edit-button" data-task-id="{{ task.id }}" style="margin-top: 2px;">Edit</button>
                     <form action="{% url 'projectpage:delete_task' task.id %}" method="post" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="delete-button">Delete</button>
+                        <button type="submit" class="delete-button" style="margin-top: 4px;">Delete</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        
+                <div id="edit-form-{{ task.id }}" class="edit-form">
+                    <form method="post" action="{% url 'projectpage:edit_task' task.id %}">
+                        {% csrf_token %}
+                        <div>
+                            <label for="title-{{ task.id }}">Title:</label>
+                            <input type="text" id="title-{{ task.id }}" name="title" value="{{ task.title }}" required>
+                        </div>
+                        <div>
+                            <label for="deadline-{{ task.id }}">Deadline:</label>
+                            <input type="date" id="deadline-{{ task.id }}" name="deadline" value="{{ task.deadline|date:'Y-m-d' }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Save Changes</button>
+                        <button type="button" onclick="document.getElementById('edit-form-{{ task.id }}').style.display='none'" class="btn btn-secondary mt-2">Cancel</button>
                     </form>
                 </div>
             </li>
@@ -129,7 +182,5 @@
             <li>No tasks yet.</li>
         {% endfor %}
     </ul>
-    
-
     <a href="{% url 'projectpage:dashboard' %}" class="back-button">Back to Dashboard</a>
 </body>
