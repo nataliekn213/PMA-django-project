@@ -14,6 +14,7 @@ urlpatterns = [
     path('dashboard/upload/', views.upload, name="upload"),
     path("task/delete/<int:task_id>/", views.delete_task, name="delete_task"),
     path('task/<int:task_id>/complete/', views.complete_task, name='complete_task'),
+    path('task/<int:task_id>/edit/', views.edit_task, name='edit_task'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(), name="login"),
 ]
