@@ -23,6 +23,15 @@
                 <div class="mb-3">
                     <label for="file" class="form-label">Choose File:</label>
                     <input type="file" class="form-control" name="file" accept=".txt, .pdf, .jpg" required>
+                  
+                    <label for="title" class="form-label">Title:</label> 
+                    <input type="title" name="title" placeholder="Title" maxlength="50">
+                    
+                    <label for="description" class="form-label">Description:</label>
+                    <input type="description" name="description" placeholder="Description" maxlength="150">
+                    
+                    <label for="keywords" class="form-label">Keywords:</label>
+                    <input type="keywords" name="keywords" placeholder="Keywords">
                 </div>
                 <button type="submit" class="btn btn-primary">Upload</button>
                 <!-- Back button -->
@@ -43,7 +52,6 @@
             {% endif %}
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

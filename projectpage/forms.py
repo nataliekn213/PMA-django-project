@@ -11,7 +11,7 @@ class TaskForm(forms.ModelForm):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['file',]
+        fields = ['file', 'title', 'description', 'keywords']
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
