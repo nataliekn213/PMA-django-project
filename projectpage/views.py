@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
 
 from .models import Task, Document
 from .forms import TaskForm, DocumentForm
+from django.http import JsonResponse
+
+
 
 # Create your views here.
 def index(request):
@@ -20,7 +23,7 @@ def login(request):
 def admin_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        admin_emails = ["iurivintonyak@gmail.com", "aadarsh.natarajan@gmail.com", "nataliekn213@gmail.com", "nouraalghamdi10@gmail.com", "ccook6387@gmail.com"]
+        admin_emails = ["iurivintonyak@gmail.com", "aadarsh.natarajan@gmail.com", "nataliekn213@gmail.com", "nouraalghamdi10@gmail.com", "ccook6387@gmail.com", "test_admin@test.com"]
         # print("Logged in user:", request.user)
         # print("Email:", request.user.email)
         if request.user.email in admin_emails:
@@ -57,7 +60,7 @@ def admin_dashboard(request):
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
-    return redirect('projectpage:admin_dashboard')
+    return redirect('projectpage:task_list')
 
 def admin_login(request):
     return render(request, "registration/admin_login.html")
@@ -92,6 +95,27 @@ def upload(request):
     else:
         form = DocumentForm()
     return render(request, 'projectpage/upload.html')
+
+@login_required
+@admin_required
+def complete_task(request, task_id):
+    if request.method == "POST":
+        task = get_object_or_404(Task, id=task_id)
+        task.is_completed = not task.is_completed
+        task.save()
+        return JsonResponse({'success': True, 'is_completed': task.is_completed})
+
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.title = request.POST.get('title', task.title)
+        task.deadline = request.POST.get('deadline', task.deadline)
+        task.save()
+        return redirect('projectpage:task_list')
+
+
+
 
 class AddView(generic.CreateView):
     form_class = TaskForm
