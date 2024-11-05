@@ -29,7 +29,10 @@
     </form>
     <br>
     <!-- comment -->
-    {% if file_url %}
+    {% if file_url and file_title and file_description and file_keywords %}
+        <h4>File title: {{ file_title }}</h4>
+        <h4>File description: {{ file_description }}</h4>
+        <h4>File keywords: {{ file_keywords }}</h4>
         {% if file_extension == 'pdf' %}
             <embed
                 src="{{ file_url }}"

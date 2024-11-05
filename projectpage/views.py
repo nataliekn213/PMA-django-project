@@ -81,12 +81,19 @@ def upload(request):
                     document = Document(file=file, title=form.cleaned_data['title'], description=form.cleaned_data['description'], keywords=form.cleaned_data['keywords'])
                     document.save()
                     file_url = document.file.url
+                    file_title = document.title
+                    file_description = document.description
+                    file_keywords = document.keywords
                     # print(file_url);
                     print(document)
                 except Exception as e:
                     print(e)
                 return render(request, 'projectpage/upload.html', {
-                    'file_url': file_url, 'file_extension': file_extension,
+                    'file_url': file_url,
+                    'file_extension': file_extension,
+                    'file_title': file_title,
+                    'file_description': file_description,
+                    'file_keywords': file_keywords
                 })
     else:
         form = DocumentForm()
