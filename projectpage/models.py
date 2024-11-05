@@ -13,6 +13,7 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=150, default="No description")
     keywords = models.TextField(default="No keywords")
+    # comment
 
     def __str__(self):
         return f'''{self.title} uploaded on {self.uploaded_at} to {self.file.url}, 
