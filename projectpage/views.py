@@ -85,10 +85,6 @@ def upload(request):
                     print(document)
                 except Exception as e:
                     print(e)
-            # else:
-            #     fs = FileSystemStorage()
-            #     filename = fs.save(file.name, file)
-            #     file_url = fs.url(filename)
                 return render(request, 'projectpage/upload.html', {
                     'file_url': file_url, 'file_extension': file_extension,
                 })
