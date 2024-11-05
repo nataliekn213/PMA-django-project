@@ -18,7 +18,7 @@ class DocumentForm(forms.ModelForm):
         if file:
             allowed_extensions = ['txt', 'pdf', 'jpg']
             file_name = file.name
-            # print(file_name)
+            # print(file_name);
             extension = file_name.split('.')[-1].lower()
             # print(extension)
             if extension not in allowed_extensions:

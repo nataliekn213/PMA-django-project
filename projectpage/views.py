@@ -78,7 +78,7 @@ def upload(request):
                     document = Document(file=file, title=form.cleaned_data['title'], description=form.cleaned_data['description'], keywords=form.cleaned_data['keywords'])
                     document.save()
                     file_url = document.file.url
-                    # print(file_url)
+                    # print(file_url);
                     print(document)
                 except Exception as e:
                     print(e)
