@@ -16,8 +16,8 @@ class Document(models.Model):
     
 class Project(models.Model):
     title = models.CharField(max_length=100, default="No Title")
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    members = models.ManyToManyField(User, through="Membership")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_projects")
+    members = models.ManyToManyField(User, through="Membership", related_name="projects")
 
     def __str__(self):
         return f"{self.title}, owned by {self.owner}"
@@ -26,7 +26,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200, default='Untitled Task')
     deadline = models.DateField()
     is_completed = models.BooleanField(default=False)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
 
     def __str__(self):
         return self.title

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import Task, Document
+from .models import Task, Document, Project
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,9 @@ class DocumentForm(forms.ModelForm):
             if extension not in allowed_extensions:
                 raise forms.ValidationError("Only .txt, .pdf, and .jpg files are allowed.")
         return file
+    
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ["title", "owner", "members"]
+    

@@ -7,8 +7,8 @@ from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
 
-from .models import Task, Document
-from .forms import TaskForm, DocumentForm
+from .models import Task, Document, Project, Membership
+from .forms import TaskForm, DocumentForm, ProjectForm
 from django.http import JsonResponse
 
 
@@ -117,8 +117,9 @@ def edit_task(request, task_id):
         task.save()
         return redirect('projectpage:task_list')
 
-
-
+class CreateProjectView(generic.CreateView):
+    form_class = ProjectForm
+    template_name = "projectpage/add_project.html"
 
 class AddView(generic.CreateView):
     form_class = TaskForm
