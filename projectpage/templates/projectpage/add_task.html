@@ -23,6 +23,12 @@
             <form method="POST" action="{% url 'projectpage:add_task' %}">
                 {% csrf_token %}
                 <div class="mb-3">
+                    <label for="project" class="form-label">Project:</label>
+                    <input type="" class="form-control" id="project" name="project" required>
+                </div>
+
+
+                <div class="mb-3">
                     <label for="title" class="form-label">Title:</label>
                     <input type="text" class="form-control" id="title" name="title" value="Untitled Task" required>
                 </div>

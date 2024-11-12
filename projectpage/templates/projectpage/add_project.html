@@ -1,6 +1,6 @@
 <body>
     <h1>Add a Project</h1>
-    <form method="POST">
+    <form method="POST" action="{% url 'projectpage:add_project' %}">
         {% csrf_token %}
         <input type="text" id="title" value="">
         <button type="submit" class="btn btn-primary">Create Project</button>
