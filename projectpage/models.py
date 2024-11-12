@@ -18,3 +18,8 @@ class Document(models.Model):
     def __str__(self):
         return f'''{self.title} uploaded on {self.uploaded_at} to {self.file.url}, 
         with description {self.description} and keywords: {self.keywords}'''
+
+# django-admin - be able to change user status (common/pma)
+class CustomUser(models.Model):
+    user = models.OneToOneField(User, on_delete+models.CASCADE)
+    is_pma = models.BooleanField(default=False)
