@@ -82,4 +82,19 @@ body {
     border-radius: 8px;
     font-size: 16px;
 }
+.back-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
 
