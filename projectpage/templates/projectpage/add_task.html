@@ -24,7 +24,12 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="project" class="form-label">Project:</label>
-                    <input type="" class="form-control" id="project" name="project" required>
+                    <!-- <input type="" class="form-control" id="project" name="project" required> -->
+                    <select name="project" id="project">
+                        {% for project in project_list %}
+                        <option>project.title</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
 

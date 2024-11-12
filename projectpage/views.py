@@ -125,6 +125,9 @@ class AddView(generic.CreateView):
     form_class = TaskForm
     template_name = "projectpage/add_task.html"
 
+    project_list = Project.objects.all()
+    context_object_name = "project_list"
+
     success_url = reverse_lazy("projectpage:dashboard")
 
 class TaskListView(generic.ListView):
