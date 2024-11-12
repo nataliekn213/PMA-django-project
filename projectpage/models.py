@@ -30,3 +30,10 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username}, working on {self.project.title}"
