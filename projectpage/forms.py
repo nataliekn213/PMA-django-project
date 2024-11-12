@@ -1,7 +1,9 @@
 from django import forms
 from django.forms import inlineformset_factory
+from django.contrib import admin
+from django.contrib.auth.models import User
 
-from .models import Task, Document
+from .models import Task, Document, Project
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -24,3 +26,14 @@ class DocumentForm(forms.ModelForm):
             if extension not in allowed_extensions:
                 raise forms.ValidationError("Only .txt, .pdf, and .jpg files are allowed.")
         return file
+
+class ProjectForm(forms.ModelForm):
+    members = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=admin.widgets.FilteredSelectMultiple("Members", is_stacked=False),
+        required=False
+    )
+
+    class Meta:
+        model = Project
+        fields = ["title", "owner", "members"]
