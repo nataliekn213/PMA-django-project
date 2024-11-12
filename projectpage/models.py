@@ -1,13 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from storages.backends.s3boto3 import S3Boto3Storage
-
-class Task(models.Model):
-    title = models.CharField(max_length=200, default='Untitled Task')
-    deadline = models.DateField()
-    is_completed = models.BooleanField(default=False)
-    def __str__(self):
-        return self.title
+    
 class Document(models.Model):
     file = models.FileField(storage=S3Boto3Storage(), upload_to='documents/')
     title = models.CharField(max_length=50, default="No title")
@@ -27,3 +21,12 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.title}, owned by {self.owner}"
+    
+class Task(models.Model):
+    title = models.CharField(max_length=200, default='Untitled Task')
+    deadline = models.DateField()
+    is_completed = models.BooleanField(default=False)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
