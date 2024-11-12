@@ -1,5 +1,8 @@
 <body>
     <h1>Add a Project</h1>
-    <input type="text" id="title" value="">
-    
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" id="title" value="">
+        <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
 </body>

@@ -20,7 +20,7 @@ class Project(models.Model):
     members = models.ManyToManyField(User, through="Membership", related_name="projects")
 
     def __str__(self):
-        return f"{self.title}, owned by {self.owner}"
+        return f"{self.title} -- {self.owner}"
     
 class Task(models.Model):
     title = models.CharField(max_length=200, default='Untitled Task')
@@ -36,4 +36,4 @@ class Membership(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user.username}, working on {self.project.title}"
+        return f"{self.user.username} -- {self.project.title}"
