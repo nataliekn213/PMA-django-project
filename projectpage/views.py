@@ -108,29 +108,87 @@ def complete_task(request, task_id):
         task.save()
         return JsonResponse({'success': True, 'is_completed': task.is_completed})
 
+
 @login_required
-def edit_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+def edit_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
-        task.title = request.POST.get('title', task.title)
-        task.deadline = request.POST.get('deadline', task.deadline)
-        task.save()
-        return redirect('projectpage:task_list')
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            project_id = request.POST.get('project')
+            task.project = Project.objects.get(id=project_id)
+            task.save()
+            return redirect('projectpage:task_list')  # Redirect to task_list after saving
+    return redirect('projectpage:task_list')
+
+
+# class EditTaskView(generic.CreateView):
+#     template_name = 'projectpage/edit_task.html'
+
+#     def get(self, request, pk):
+#         task = get_object_or_404(Task, pk=pk)
+#         projects = Project.objects.all()
+#         form = TaskForm(instance=task)
+#         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
+
+#     def post(self, request, pk):
+#         task = get_object_or_404(Task, pk=pk)
+#         form = TaskForm(request.POST, instance=task)
+#         if form.is_valid():
+#             project_id = request.POST.get('project')
+#             project = Project.objects.get(id=project_id) if project_id else None
+#             task.project = project
+#             task.save()
+#             return redirect('task_list')
+#         projects = Project.objects.all()
+#         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
 
 class CreateProjectView(generic.CreateView):
     form_class = ProjectForm
     template_name = "projectpage/add_project.html"
 
+# class AddView(generic.CreateView):
+#     form_class = TaskForm
+#     template_name = "projectpage/add_task.html"
+
+#     project_list = Project.objects.all()
+#     context_object_name = "project_list"
+
+#     success_url = reverse_lazy("projectpage:dashboard")
+
 class AddView(generic.CreateView):
-    form_class = TaskForm
-    template_name = "projectpage/add_task.html"
+    template_name = 'projectpage/add_task.html'
 
-    project_list = Project.objects.all()
-    context_object_name = "project_list"
+    def get(self, request):
+        projects = Project.objects.all()
+        form = TaskForm()
+        return render(request, self.template_name, {'form': form, 'projects': projects})
 
-    success_url = reverse_lazy("projectpage:dashboard")
+    def post(self, request):
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            project_id = request.POST.get('project')
+            project = Project.objects.get(id=project_id) if project_id else None
+            
+            task = form.save(commit=False)
+            task.project = project
+            task.save()
+            return redirect('projectpage:task_list')  # Ensure 'task_list' matches the name in urls.py
+        else:
+            projects = Project.objects.all()
+            return render(request, self.template_name, {'form': form, 'projects': projects})
+
+# class TaskListView(generic.ListView):
+#     model = Task
+#     template_name = "projectpage/task_list.html"
+#     context_object_name = "tasks"
 
 class TaskListView(generic.ListView):
     model = Task
-    template_name = "projectpage/task_list.html"
-    context_object_name = "task_list"
+    template_name = 'projectpage/task_list.html'
+    context_object_name = 'tasks'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['projects'] = Project.objects.all() 
+        return context
