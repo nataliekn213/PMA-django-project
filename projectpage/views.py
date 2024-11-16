@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
@@ -144,18 +145,31 @@ def edit_task(request, pk):
 #         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
 
 class CreateProjectView(generic.CreateView):
-    form_class = ProjectForm
     template_name = "projectpage/add_project.html"
+    form_class = ProjectForm
 
-# class AddView(generic.CreateView):
-#     form_class = TaskForm
-#     template_name = "projectpage/add_task.html"
-
-#     project_list = Project.objects.all()
-#     context_object_name = "project_list"
-
-#     success_url = reverse_lazy("projectpage:dashboard")
-
+    def get(self, request):
+        print("getting")
+        users = User.objects.all()
+        form = ProjectForm()
+        return render(request, self.template_name, {"form":form, "users":users})
+    
+    def post(self, request):
+        form = self.form_class(request.POST)
+        # print(f"form: {form}")
+        if form.is_valid():
+            # title = request.POST.get("title")
+            # print(f"title: {title}")
+            project = form.save(commit=False)
+            project.owner = request.user
+            project.save()
+            form.save_m2m()
+            return redirect("projectpage:dashboard")
+        else:
+            print(f"errors: {form.errors}")
+            users = User.objects.all()
+            return render(request, self.template_name, {"form":form, "users":users})
+    
 class AddView(generic.CreateView):
     template_name = 'projectpage/add_task.html'
 
@@ -177,6 +191,15 @@ class AddView(generic.CreateView):
         else:
             projects = Project.objects.all()
             return render(request, self.template_name, {'form': form, 'projects': projects})
+
+# class AddView(generic.CreateView):
+#     form_class = TaskForm
+#     template_name = "projectpage/add_task.html"
+
+#     project_list = Project.objects.all()
+#     context_object_name = "project_list"
+
+#     success_url = reverse_lazy("projectpage:dashboard")
 
 # class TaskListView(generic.ListView):
 #     model = Task

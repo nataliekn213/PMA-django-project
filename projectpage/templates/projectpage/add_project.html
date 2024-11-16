@@ -2,7 +2,23 @@
     <h1>Add a Project</h1>
     <form method="POST" action="{% url 'projectpage:add_project' %}">
         {% csrf_token %}
-        <input type="text" id="title" value="">
+
+        {{ form.title.label_tag }}
+        {{ form.title }} <br><br>
+
+        {{ form.owner.label_tag }}
+        {{ form.owner }} <br><br>
+
+        {{ form.members.label_tag }}
+        {{ form.members }} <br><br>
+
+        <!-- {% for user in users %}
+            <input type="checkbox" name="members" value="{{ user.id }}" id="user_{{user.id}}">
+            <label for="user_{{user.id}}" class="form-label">{{user.username}}</label><br>
+        {% endfor %} -->
+        
         <button type="submit" class="btn btn-primary">Create Project</button>
     </form>
+
+    <a href="{% url 'projectpage:dashboard' %}">Back to Dashboard</a>
 </body>
