@@ -30,10 +30,24 @@ class DocumentForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
-        widget=admin.widgets.FilteredSelectMultiple("Members", is_stacked=False),
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+
+    tasks = forms.ModelMultipleChoiceField(
+        queryset=Task.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
 
     class Meta:
         model = Project
-        fields = ["title", "owner", "members"]
+        fields = ["title", "owner", "members", "tasks"]
+
+    def save(self, commit=True):
+        project = super().save(commit=False)
+        if commit:
+            project.save()
+            # project.members.set(self.cleaned_data["members"])
+            self.cleaned_data["tasks"].update(project=project)
+        return project

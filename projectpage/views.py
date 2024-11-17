@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.views.decorators.http import require_POST
+from django.db.models import Q
+import boto3
 
 from .models import Task, Document, Project, Membership
 from .forms import TaskForm, DocumentForm, ProjectForm
@@ -40,6 +44,33 @@ def dashboard(request):
         "user_id" : user_id,
     }
     return render(request, 'projectpage/dashboard.html', context)
+
+
+@require_POST
+def delete_project(request, project_id):
+    # Get the project to delete
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Initialize S3 client
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+
+    # Delete all files associated with the project from S3
+    # Assuming tasks have a file field, and files are stored in a project-specific folder
+    for document in project.documents.all():
+        if document.file:  # Ensure there's a file to delete
+            s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=document.file.name)
+        document.delete()
+
+    # Delete the project and related tasks
+    project.delete()
+
+    # Redirect back to the project list after deletion
+    return redirect('projectpage:project_list')
 
 @login_required
 @admin_required
@@ -121,6 +152,19 @@ def edit_task(request, pk):
             return redirect('projectpage:task_list')  # Redirect to task_list after saving
     return redirect('projectpage:task_list')
 
+@login_required
+def project_list(request):
+    # projects = Project.objects.prefetch_related('members','tasks').all()  # Optimizes task loading
+    cur_user = request.user
+    projects = Project.objects.filter(
+        Q(members=cur_user) | Q(owner=cur_user)
+    ).distinct()
+    context = {
+        "projects":projects,
+        "cur_user":cur_user,
+    }
+    return render(request, 'projectpage/project_list.html', context)
+
 
 # class EditTaskView(generic.CreateView):
 #     template_name = 'projectpage/edit_task.html'
@@ -144,18 +188,31 @@ def edit_task(request, pk):
 #         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
 
 class CreateProjectView(generic.CreateView):
-    form_class = ProjectForm
     template_name = "projectpage/add_project.html"
+    form_class = ProjectForm
 
-# class AddView(generic.CreateView):
-#     form_class = TaskForm
-#     template_name = "projectpage/add_task.html"
-
-#     project_list = Project.objects.all()
-#     context_object_name = "project_list"
-
-#     success_url = reverse_lazy("projectpage:dashboard")
-
+    def get(self, request):
+        print("getting")
+        users = User.objects.all()
+        form = ProjectForm()
+        return render(request, self.template_name, {"form":form, "users":users})
+    
+    def post(self, request):
+        form = self.form_class(request.POST)
+        # print(f"form: {form}")
+        if form.is_valid():
+            # title = request.POST.get("title")
+            # print(f"title: {title}")
+            project = form.save(commit=False)
+            project.owner = request.user
+            project.save()
+            form.save_m2m()
+            return redirect("projectpage:dashboard")
+        else:
+            print(f"errors: {form.errors}")
+            users = User.objects.all()
+            return render(request, self.template_name, {"form":form, "users":users})
+    
 class AddView(generic.CreateView):
     template_name = 'projectpage/add_task.html'
 
@@ -177,6 +234,15 @@ class AddView(generic.CreateView):
         else:
             projects = Project.objects.all()
             return render(request, self.template_name, {'form': form, 'projects': projects})
+
+# class AddView(generic.CreateView):
+#     form_class = TaskForm
+#     template_name = "projectpage/add_task.html"
+
+#     project_list = Project.objects.all()
+#     context_object_name = "project_list"
+
+#     success_url = reverse_lazy("projectpage:dashboard")
 
 # class TaskListView(generic.ListView):
 #     model = Task
