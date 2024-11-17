@@ -18,7 +18,7 @@
             <section class="dashboard-content">
                 <h2 class="mb-3">Dashboard Overview</h2>
                 <p class="fw-bold">Logged in as: {{ user.username }}</p>
-                <p>Welcome to the dashboard, {{ user.first_name }} {{ user.last_name }}!</p>
+                <p>Welcome to the dashboard, {{user.first_name}} {{user.last_name}}!</p>
 
                 <div class="d-flex justify-content-center gap-3 mt-5">
                     <a href="{% url 'projectpage:add_task' %}" class="btn btn-primary">Add Task</a>
