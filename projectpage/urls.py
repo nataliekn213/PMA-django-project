@@ -18,6 +18,11 @@ urlpatterns = [
     path('task_list/', views.TaskListView.as_view(), name='task_list'),
 
     path('task/<int:pk>/edit/', views.edit_task, name='edit_task'),
+        
+    path('project_list/', views.project_list, name='project_list'),
+    path('project/<int:project_id>/delete/', views.delete_project, name='delete_project'),
+
+
 
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(), name="login"),

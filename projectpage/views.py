@@ -7,6 +7,8 @@ from django.http import HttpResponseForbidden, FileResponse
 from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.views.decorators.http import require_POST
+import boto3
 
 from .models import Task, Document, Project, Membership
 from .forms import TaskForm, DocumentForm, ProjectForm
@@ -41,6 +43,33 @@ def dashboard(request):
         "user_id" : user_id,
     }
     return render(request, 'projectpage/dashboard.html', context)
+
+
+@require_POST
+def delete_project(request, project_id):
+    # Get the project to delete
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Initialize S3 client
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+
+    # Delete all files associated with the project from S3
+    # Assuming tasks have a file field, and files are stored in a project-specific folder
+    for document in project.documents.all():
+        if document.file:  # Ensure there's a file to delete
+            s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=document.file.name)
+        document.delete()
+
+    # Delete the project and related tasks
+    project.delete()
+
+    # Redirect back to the project list after deletion
+    return redirect('projectpage:project_list')
 
 @login_required
 @admin_required
@@ -121,6 +150,11 @@ def edit_task(request, pk):
             task.save()
             return redirect('projectpage:task_list')  # Redirect to task_list after saving
     return redirect('projectpage:task_list')
+
+
+def project_list(request):
+    projects = Project.objects.prefetch_related('members','tasks').all()  # Optimizes task loading
+    return render(request, 'projectpage/project_list.html', {'projects': projects})
 
 
 # class EditTaskView(generic.CreateView):

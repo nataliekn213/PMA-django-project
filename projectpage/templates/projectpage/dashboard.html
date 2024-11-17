@@ -20,11 +20,14 @@
                 <p class="fw-bold">Logged in as: {{ user.username }}</p>
                 <p>Welcome to the dashboard, {{ user.first_name }} {{ user.last_name }}!</p>
 
-                <div class="d-flex justify-content-center gap-3 mt-4">
+                <div class="d-flex justify-content-center gap-3 mt-5">
                     <a href="{% url 'projectpage:add_task' %}" class="btn btn-primary">Add Task</a>
                     <a href="{% url 'projectpage:task_list' %}" class="btn btn-primary">View Tasks</a>
                     <a href="{% url 'projectpage:upload' %}" class="btn btn-primary">Upload File</a>
                     <a href="{% url 'projectpage:add_project' %}" class="btn btn-primary">Create a Project</a>
+                    <a href="{% url 'projectpage:project_list' %}" class="btn btn-primary">View Project List</a>
+
+
                 </div>
             </section>
         </main>

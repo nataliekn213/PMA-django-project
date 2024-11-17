@@ -8,6 +8,8 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=150, default="No description")
     keywords = models.TextField(default="No keywords")
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name="documents", null=True, blank=True)  # String reference to Project
+
     # comment
 
     def __str__(self):
