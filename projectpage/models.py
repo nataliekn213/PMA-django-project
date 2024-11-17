@@ -21,6 +21,12 @@ class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_projects")
     members = models.ManyToManyField(User, through="Membership", related_name="projects")
 
+    def is_part_of_project(self, member):
+        user_list = list(User.objects.all())    
+        if member in user_list:
+            return True
+        return False
+
     def __str__(self):
         return f"{self.title} -- {self.owner}"
     

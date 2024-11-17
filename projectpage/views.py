@@ -151,10 +151,16 @@ def edit_task(request, pk):
             return redirect('projectpage:task_list')  # Redirect to task_list after saving
     return redirect('projectpage:task_list')
 
-
+@login_required
 def project_list(request):
-    projects = Project.objects.prefetch_related('members','tasks').all()  # Optimizes task loading
-    return render(request, 'projectpage/project_list.html', {'projects': projects})
+    # projects = Project.objects.prefetch_related('members','tasks').all()  # Optimizes task loading
+    cur_user = request.user
+    projects = Project.objects.filter(members=cur_user)
+    context = {
+        "projects":projects,
+        "cur_user":cur_user,
+    }
+    return render(request, 'projectpage/project_list.html', context)
 
 
 # class EditTaskView(generic.CreateView):
