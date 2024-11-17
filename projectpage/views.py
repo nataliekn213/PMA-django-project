@@ -8,6 +8,7 @@ from functools import wraps
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 import boto3
 
 from .models import Task, Document, Project, Membership
@@ -155,7 +156,9 @@ def edit_task(request, pk):
 def project_list(request):
     # projects = Project.objects.prefetch_related('members','tasks').all()  # Optimizes task loading
     cur_user = request.user
-    projects = Project.objects.filter(members=cur_user)
+    projects = Project.objects.filter(
+        Q(members=cur_user) | Q(owner=cur_user)
+    ).distinct()
     context = {
         "projects":projects,
         "cur_user":cur_user,
