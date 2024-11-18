@@ -33,7 +33,7 @@ def admin_required(view_func):
         except CustomUserProfile.DoesNotExist:
             pass
         
-        return HttpResponseForbidden("You do not have permission to access this page.")
+        return render(request, 'projectpage/admin_permission_denied.html', status=403)
     return _wrapped_view
 
 @login_required
