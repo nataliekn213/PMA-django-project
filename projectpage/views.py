@@ -18,8 +18,12 @@ from django.http import JsonResponse
 
 
 # Create your views here.
+# def index(request):
+#     return render(request, 'projectpage/index.html')
+
 def index(request):
-    return render(request, 'projectpage/index.html')
+    projects = Project.objects.all()  # Fetch all projects from the database
+    return render(request, 'projectpage/index.html', {'projects': projects})
 
 def login(request):
     return render(request, 'registration/login.html')
@@ -44,6 +48,18 @@ def dashboard(request):
         "user_id" : user_id,
     }
     return render(request, 'projectpage/dashboard.html', context)
+
+
+
+def home(request):
+    if not request.user.is_authenticated:
+        # Only get limited project info for anonymous users
+        projects = Project.objects.only('title', 'owner')
+    else:
+        # Fetch all projects with full details for logged-in users
+        projects = Project.objects.all()
+    
+    return render(request, 'index.html', {'projects': projects})
 
 
 @require_POST
@@ -164,6 +180,8 @@ def project_list(request):
         "cur_user":cur_user,
     }
     return render(request, 'projectpage/project_list.html', context)
+
+
 
 
 # class EditTaskView(generic.CreateView):
