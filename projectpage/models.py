@@ -46,7 +46,10 @@ class Membership(models.Model):
     def __str__(self):
         return f"{self.user.username} -- {self.project.title}"
 
-# django-admin - be able to change user status (common/pma)
+# CustomUser model to differentiate user types
 class CustomUser(models.Model):
-    user = models.OneToOneField(User, on_delete+models.CASCADE)
-    is_pma = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_pma = models.BooleanField(default=False)  # PMA admin status
+
+    def __str__(self):
+        return f"{self.user.username} - {'PMA Admin' if self.is_pma else 'Common User'}"
