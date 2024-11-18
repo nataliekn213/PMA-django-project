@@ -1,8 +1,57 @@
-<body>
+<!-- <body>
     <h1>Team B-05 Project Page</h1>
     <h2>Currently W.I.P</h2>
     <h3>Please select from the login options below:</h3>
     <a href="/projectpage/registration/login">Standard User Login</a> <br>
-    <!-- <a href={%url 'login'%}>Standard User Login</a> <br>  might need for later don't remove-->
-    <a href="/projectpage/registration/admin_login">Admin Login</a> <br>
+    <a href={%url 'login'%}>Standard User Login</a> <br>  might need for later don't remove-->
+    <!-- <a href="/projectpage/registration/admin_login">Admin Login</a> <br>
+</body> -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project List</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container my-5">
+    <h2 class="text-center">Project List</h2>
+    
+    <div class="d-flex justify-content-center">
+        <table class="table table-bordered w-50">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                    <tr>
+                        <td>{{ project.title }}</td>
+                        <td>{{ project.owner.username }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">No projects available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            <a href="/projectpage/registration/admin_login" class="btn btn-primary">Admin Login</a>
+        {% endif %}
+    </div>
+</div>
+
 </body>
+</html>
