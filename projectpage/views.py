@@ -46,6 +46,7 @@ def dashboard(request):
     }
     return render(request, 'projectpage/dashboard.html', context)
 
+@login_required
 @require_POST
 def delete_project(request, project_id):
     # Get the project to delete
@@ -69,19 +70,23 @@ def delete_project(request, project_id):
     project.delete()
 
     # Redirect back to the project list after deletion
-    return redirect('projectpage:project_list')
+    return redirect('projectpage:admin_dashboard')
 
 @login_required
 @admin_required
 def admin_dashboard(request):
     user_id = request.user
     full_name = request.user.get_full_name()
-    task_list = Task.objects.all()  # This retrieves all tasks
+
+    # Retrieve all projects and files since PMA admins need to see everything
+    projects = Project.objects.all()
+    documents = Document.objects.all()
 
     context = {
         "full_name": full_name,
         "user_id": user_id,
-        "task_list": task_list,
+        "projects": projects,
+        "documents": documents,
     }
     return render(request, 'projectpage/admin_dashboard.html', context)
 
@@ -91,6 +96,35 @@ def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
     return redirect('projectpage:task_list')
+
+@login_required
+@require_POST
+def delete_file(request, document_id):
+    # Get the file object from the database
+    document = get_object_or_404(Document, id=document_id)
+
+    # Initialize the S3 client
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+
+    # Delete the file from S3
+    if document.file:
+        try:
+            s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=document.file.name)
+        except Exception as e:
+            # Handle any errors during the deletion
+            print(f"Error deleting file from S3: {e}")
+    
+    # Delete the file record from the database
+    document.delete()
+
+    # Redirect back to the admin dashboard
+    return redirect('projectpage:admin_dashboard')
+
 
 def admin_login(request):
     return render(request, "registration/admin_login.html")
@@ -103,6 +137,9 @@ def upload(request):
             file = form.cleaned_data['file']
             file_name = file.name
             file_extension = file_name.split('.')[-1].lower()  # Get the file extension
+
+            file_url = file_title = file_description = file_keywords = None  # Initialize variables
+            
             if settings.USE_S3:
                 try:
                     document = Document(
@@ -116,19 +153,20 @@ def upload(request):
                     file_title = document.title
                     file_description = document.description
                     file_keywords = document.keywords
-                    print(document)
                 except Exception as e:
                     print(e)
-                return render(request, 'projectpage/upload.html', {
-                    'file_url': file_url,
-                    'file_extension': file_extension,
-                    'file_title': file_title,
-                    'file_description': file_description,
-                    'file_keywords': file_keywords
-                })
+
+            return render(request, 'projectpage/upload.html', {
+                'file_url': file_url,
+                'file_extension': file_extension,
+                'file_title': file_title,
+                'file_description': file_description,
+                'file_keywords': file_keywords
+            })
     else:
         form = DocumentForm()
-    return render(request, 'projectpage/upload.html')
+
+    return render(request, 'projectpage/upload.html', {'form': form})
 
 @login_required
 @admin_required
