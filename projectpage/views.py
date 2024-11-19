@@ -16,8 +16,12 @@ from .forms import TaskForm, DocumentForm, ProjectForm
 from django.http import JsonResponse
 
 # Create your views here.
+# def index(request):
+#     return render(request, 'projectpage/index.html')
+
 def index(request):
-    return render(request, 'projectpage/index.html')
+    projects = Project.objects.all()  # Fetch all projects from the database
+    return render(request, 'projectpage/index.html', {'projects': projects})
 
 def login(request):
     return render(request, 'registration/login.html')
@@ -46,7 +50,19 @@ def dashboard(request):
     }
     return render(request, 'projectpage/dashboard.html', context)
 
-@login_required
+
+
+def home(request):
+    if not request.user.is_authenticated:
+        # Only get limited project info for anonymous users
+        projects = Project.objects.only('title', 'owner')
+    else:
+        # Fetch all projects with full details for logged-in users
+        projects = Project.objects.all()
+    
+    return render(request, 'index.html', {'projects': projects})
+
+
 @require_POST
 def delete_project(request, project_id):
     # Get the project to delete
@@ -200,6 +216,30 @@ def project_list(request):
         "cur_user": cur_user,
     }
     return render(request, 'projectpage/project_list.html', context)
+
+
+
+
+# class EditTaskView(generic.CreateView):
+#     template_name = 'projectpage/edit_task.html'
+
+#     def get(self, request, pk):
+#         task = get_object_or_404(Task, pk=pk)
+#         projects = Project.objects.all()
+#         form = TaskForm(instance=task)
+#         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
+
+#     def post(self, request, pk):
+#         task = get_object_or_404(Task, pk=pk)
+#         form = TaskForm(request.POST, instance=task)
+#         if form.is_valid():
+#             project_id = request.POST.get('project')
+#             project = Project.objects.get(id=project_id) if project_id else None
+#             task.project = project
+#             task.save()
+#             return redirect('task_list')
+#         projects = Project.objects.all()
+#         return render(request, self.template_name, {'form': form, 'task': task, 'projects': projects})
 
 class CreateProjectView(generic.CreateView):
     template_name = "projectpage/add_project.html"
