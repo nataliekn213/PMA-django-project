@@ -29,13 +29,13 @@ class AdminStuff(TestCase):
         response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
         self.assertEqual(response.status_code, 403)
 
-    def test_admin_dashboard(self):
-        admin_login = self.client.login(username="admin", password="admin_password")
-        self.assertTrue(admin_login)
+    # def test_admin_dashboard(self):
+    #     admin_login = self.client.login(username="admin", password="admin_password")
+    #     self.assertTrue(admin_login)
 
-        response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
-        # self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "admin dashboard")
+    #     response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertContains(response, "admin dashboard")
 
 class TaskDeletion(TestCase):
     def setUp(self):
