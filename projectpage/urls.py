@@ -17,8 +17,13 @@ urlpatterns = [
     path('task/<int:task_id>/complete/', views.complete_task, name='complete_task'),
     path('task_list/', views.TaskListView.as_view(), name='task_list'),
     path('task/<int:pk>/edit/', views.edit_task, name='edit_task'),
+
+    # Project and File Deletion URLs
     path('project_list/', views.project_list, name='project_list'),
     path('project/<int:project_id>/delete/', views.delete_project, name='delete_project'),
+    path('file/<int:document_id>/delete/', views.delete_file, name='delete_file'),  # New URL for file deletion
+
+    # Authentication URLs
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(), name="login"),
     path('', views.home, name='home'),
