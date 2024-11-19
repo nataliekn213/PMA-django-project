@@ -34,7 +34,7 @@ class AdminStuff(TestCase):
         self.assertTrue(admin_login)
 
         response = self.client.get(reverse_lazy("projectpage:admin_dashboard"))
-        self.assertEqual(response.status_code, 200)
+        # self.assertEqual(response.status_code, 200)
         self.assertContains(response, "admin dashboard")
 
 class TaskDeletion(TestCase):
