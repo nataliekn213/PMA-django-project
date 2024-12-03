@@ -199,3 +199,9 @@ if USE_S3:
 # https force redirect
 SECURE_SSL_REDIRECT = True
 ALLOWED_HOSTS = ['project-b-05-b17b7c166791.herokuapp.com', 'www.project-b-05-b17b7c166791.herokuapp.com']
+
+
+# hsts enable
+SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for one year (recommended)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Include the site in browsers' HSTS preload list
