@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.views.decorators.http import require_POST
 from django.db.models import Q
+from django.db.models.functions import Lower
 import boto3
 
 from .models import Task, Document, Project, Membership, CustomUserProfile  # Updated import
@@ -246,7 +247,7 @@ def project_list(request):
         projects = list(projects_with_tasks) + list(projects_without_tasks)
 
     elif sort_option == 'alphabetical':
-        projects = Project.objects.all().order_by('title')
+        projects = Project.objects.all().order_by(Lower('title'))
 
     else:
         projects = Project.objects.all()
