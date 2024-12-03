@@ -234,27 +234,33 @@ def project_list(request):
     #     "cur_user": cur_user,
     # }
     # return render(request, "projectpage/project_list.html", context)
+    cur_user = request.user
     sort_option = request.GET.get('sort', 'date')
     if sort_option == 'date':
         projects_with_tasks = Project.objects.annotate(
             earliest_task_due=Min('tasks__deadline')
-        ).filter(earliest_task_due__isnull=False).order_by('earliest_task_due', 'title')
+        ).filter(earliest_task_due__isnull=False, members=cur_user).order_by('earliest_task_due', 'title')
 
         projects_without_tasks = Project.objects.annotate(
             earliest_task_due=Min('tasks__deadline')
-        ).filter(earliest_task_due__isnull=True).order_by('title')
+        ).filter(earliest_task_due__isnull=True, members=cur_user).order_by('title')
 
         projects = list(projects_with_tasks) + list(projects_without_tasks)
 
     elif sort_option == 'alphabetical':
-        projects = Project.objects.all().order_by(Lower('title'))
+        # projects = Project.objects.all().order_by(Lower('title'))
+        projects = Project.objects.filter(members=cur_user).order_by(Lower('title'))
 
     else:
-        projects = Project.objects.all()
+        # projects = Project.objects.all()
+        projects = Project.objects.filter(members=cur_user)
 
     return render(request, 'projectpage/project_list.html', {'projects': projects})
 
-
+@login_required
+def all_projects(request):
+    projects = Project.objects.all()
+    return render (request, "projectpage/all_projects.html", {"projects" : projects})
 
 # class EditTaskView(generic.CreateView):
 #     template_name = 'projectpage/edit_task.html'

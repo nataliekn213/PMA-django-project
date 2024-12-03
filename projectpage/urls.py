@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Project and File Deletion URLs
     path('project_list/', views.project_list, name='project_list'),
+    path("all_projects/", views.all_projects, name="all_projects"),
     path('project/<int:project_id>/delete/', views.delete_project, name='delete_project'),
     path('file/<int:document_id>/delete/', views.delete_file, name='delete_file'),  # New URL for file deletion
 
