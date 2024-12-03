@@ -195,3 +195,21 @@ if USE_S3:
     # Settings for uploaded files
     AWS_S3_FILE_OVERWRITE = False  # Prevent file overwrite with same name
     # AWS_DEFAULT_ACL = None  # Make files public by default, remove if not needed
+
+# https force redirect
+SECURE_SSL_REDIRECT = True
+ALLOWED_HOSTS = ['project-b-05-b17b7c166791.herokuapp.com', 'www.project-b-05-b17b7c166791.herokuapp.com']
+
+
+# hsts enable
+SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for one year (recommended)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Include the site in browsers' HSTS preload list
+
+# Session Cookie Enable
+SESSION_COOKIE_SECURE = True
+
+SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access to the session cookie
+SESSION_COOKIE_SAMESITE = 'Lax'  # Restricts cross-site usage ('Strict', 'Lax', or 'None')
+SESSION_COOKIE_AGE = 1209600  # Sets the session expiry time (in seconds, default is 2 weeks)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Optionally expire session cookies on browser close
