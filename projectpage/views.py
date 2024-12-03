@@ -214,9 +214,11 @@ def project_list(request):
     projects = Project.objects.filter(
         Q(members=cur_user) | Q(owner=cur_user)
     ).distinct()
+    documents = Document.objects.filter(project__in=projects)
     context = {
         "projects": projects,
         "cur_user": cur_user,
+        "documents": documents,
     }
     return render(request, 'projectpage/project_list.html', context)
 

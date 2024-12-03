@@ -120,6 +120,18 @@
                             </button>
                         </form>
                     </li>
+                    <li class="list-group-item mb-3">
+                        <h3>Files:</h3>
+                        {% if documents %}
+                            <ul class="list-group list-group-flush">
+                                {% for document in documents %}
+                                    <li class="list-group-item">
+                                        <strong>{{ document.title }}</strong> - <a href="{{ document.file.url }}" target="_blank">{{ document.file.url }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
