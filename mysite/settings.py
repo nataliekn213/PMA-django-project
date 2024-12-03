@@ -195,3 +195,7 @@ if USE_S3:
     # Settings for uploaded files
     AWS_S3_FILE_OVERWRITE = False  # Prevent file overwrite with same name
     # AWS_DEFAULT_ACL = None  # Make files public by default, remove if not needed
+
+# https force redirect
+SECURE_SSL_REDIRECT = True
+ALLOWED_HOSTS = ['project-b-05-b17b7c166791.herokuapp.com', 'www.project-b-05-b17b7c166791.herokuapp.com']
