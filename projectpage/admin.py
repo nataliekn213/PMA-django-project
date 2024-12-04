@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Task, Document, Project, Membership, CustomUserProfile  # Updated import
+from .models import Task, Document, Project, Membership, CustomUserProfile, AccessRequest  # Updated import
 from .forms import ProjectForm
 
 # Register your models
 admin.site.register(Task)
 admin.site.register(Document)
 admin.site.register(Membership)
+admin.site.register(AccessRequest)
 
 # Custom admin for Project
 class ProjectAdmin(admin.ModelAdmin):

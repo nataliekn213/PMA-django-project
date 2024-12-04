@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden, FileResponse
@@ -12,7 +13,7 @@ from django.db.models import Q
 from django.db.models.functions import Lower
 import boto3
 
-from .models import Task, Document, Project, Membership, CustomUserProfile  # Updated import
+from .models import Task, Document, Project, Membership, CustomUserProfile, AccessRequest # Updated import
 from .forms import TaskForm, DocumentForm, ProjectForm
 from django.http import JsonResponse
 from django.db.models import Min
@@ -143,6 +144,35 @@ def delete_file(request, document_id):
     # Redirect back to the admin dashboard
     return redirect('projectpage:admin_dashboard')
 
+@login_required
+def all_projects(request):
+    projects = Project.objects.all()
+    cur_user = request.user
+    already_requested = Project.objects.filter(access_requests__user=cur_user)
+    print(already_requested)
+    context = {
+        "projects" : projects,
+        "user" : cur_user,
+        "already_requested" : already_requested,
+    }
+    return render (request, "projectpage/all_projects.html", context)
+
+@require_POST
+def request_access(request):
+    if request.method == "POST":
+        project_id = request.POST.get("project_id")
+        project = get_object_or_404(Project, id=project_id)
+
+        if AccessRequest.objects.filter(user=request.user, project=project).exists():
+            messages.warning(request, "You have already requested to join this project.")
+        elif request.user in project.members.all() or request.user == project.owner:
+            messages.warning(request, "You already have access to this project.")
+        else:
+            AccessRequest.objects.create(
+                user=request.user,
+                project=project,
+            )
+    return redirect("projectpage:all_projects")
 
 def admin_login(request):
     return render(request, "registration/admin_login.html")
@@ -239,28 +269,27 @@ def project_list(request):
     if sort_option == 'date':
         projects_with_tasks = Project.objects.annotate(
             earliest_task_due=Min('tasks__deadline')
-        ).filter(earliest_task_due__isnull=False, members=cur_user).order_by('earliest_task_due', 'title')
+        ).filter(
+            Q(earliest_task_due__isnull=False) & (Q(members=cur_user) | Q(owner=cur_user))
+        ).order_by('earliest_task_due', 'title')
 
         projects_without_tasks = Project.objects.annotate(
             earliest_task_due=Min('tasks__deadline')
-        ).filter(earliest_task_due__isnull=True, members=cur_user).order_by('title')
+        ).filter(
+            Q(earliest_task_due__isnull=True) & (Q(members=cur_user) | Q(owner=cur_user)) 
+        ).order_by('title')
 
         projects = list(projects_with_tasks) + list(projects_without_tasks)
 
     elif sort_option == 'alphabetical':
         # projects = Project.objects.all().order_by(Lower('title'))
-        projects = Project.objects.filter(members=cur_user).order_by(Lower('title'))
+        projects = Project.objects.filter(Q(members=cur_user) | Q(owner=cur_user)).order_by(Lower('title'))
 
     else:
         # projects = Project.objects.all()
-        projects = Project.objects.filter(members=cur_user)
+        projects = Project.objects.filter(members=cur_user | Q(owner=cur_user))
 
     return render(request, 'projectpage/project_list.html', {'projects': projects})
-
-@login_required
-def all_projects(request):
-    projects = Project.objects.all()
-    return render (request, "projectpage/all_projects.html", {"projects" : projects})
 
 # class EditTaskView(generic.CreateView):
 #     template_name = 'projectpage/edit_task.html'

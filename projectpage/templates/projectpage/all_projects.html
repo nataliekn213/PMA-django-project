@@ -12,8 +12,6 @@
     
     <div class="container mt-5">
         <h1 class="text-center mb-4">All Projects</h1>
-        <form method="POST">
-            {% csrf_token %}
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -26,13 +24,25 @@
                         <tr>
                             <td>{{ project.title }}</td>
                             <td>
-                                <button type="button" class="btn btn-primary btn-sm">Request Access</button>                                
+                                {% if project in already_requested %}
+                                    <button type="submit" disabled class="btn btn-primary btn-sm">Already Requested</button>
+                                {% elif user not in project.members.all and user != project.owner%}
+                                    <form method="POST" action="{% url 'projectpage:request_access' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm" name="project_id" value="{{ project.id }}">Request Access</button>
+                                    </form>
+                                {% else %}
+                                        <button type="submit" disabled class="btn btn-primary btn-sm">Already in Project</button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        </form>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'projectpage:dashboard' %}" class="btn btn-dark">Back to Dashboard</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->

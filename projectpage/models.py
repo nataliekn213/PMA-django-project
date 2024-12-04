@@ -54,3 +54,18 @@ class CustomUserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {'PMA Admin' if self.is_pma_admin else 'Common User'}"
+
+class AccessRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="access_requests")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE ,related_name="access_requests")
+    status = models.CharField(
+        max_length=20,
+        choices=[("pending", "Pending"), ("accepted", "Accepted"), ("denied", "Denied")],
+        default="pending",
+    )
+
+    class Meta:
+        unique_together = ("user", "project")
+
+    def __str__(self):
+        return f"{self.user.username} requested access to {self.project.title} ({self.status})"
