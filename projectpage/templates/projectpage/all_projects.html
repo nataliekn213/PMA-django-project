@@ -12,22 +12,27 @@
     
     <div class="container mt-5">
         <h1 class="text-center mb-4">All Projects</h1>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Request Access</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for project in projects %}
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>{{ project.title }}</td>
-                        <td> <a href="" class="btn btn-primary">Request Access</a> </td>
+                        <th>Title</th>
+                        <th>Request Access</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <td>{{ project.title }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm">Request Access</button>                                
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
     </div>
 
     <!-- Bootstrap JS -->
