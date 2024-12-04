@@ -71,6 +71,9 @@ def delete_project(request, project_id):
     # Get the project to delete
     project = get_object_or_404(Project, id=project_id)
 
+    if not request.user == project.owner:
+        return HttpResponseForbidden("You do not have permission to delete this project.")
+
     # Initialize S3 client
     s3 = boto3.client(
         's3',

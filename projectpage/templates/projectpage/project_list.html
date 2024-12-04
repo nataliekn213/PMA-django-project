@@ -55,7 +55,9 @@
                             {% if documents %}
                                 <ul>
                                     {% for document in documents %}
-                                        <li><a href="{{ document.file.url }}" target="_blank">{{ document.title }}</a></li>
+                                        {% if document.project == project %}
+                                            <li><a href="{{ document.file.url }}" target="_blank">{{ document.title }}</a></li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             {% else %}
