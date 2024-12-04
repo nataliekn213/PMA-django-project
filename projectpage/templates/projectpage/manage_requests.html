@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Requests</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Manage Requests</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Project</td>
+                    <td>Incoming User Requests</td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    {% if req.project in projects %}
+                        <td>{{req.project.title}}</td>
+                        <td>{{ req.user }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'projectpage:accept_or_deny' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="request_id" value="{{ req.id }}">
+                                <button type="submit" class="btn btn-primary btn-sm" name="request_action" value="accept">Accept</button>
+                                <button type="submit" class="btn btn-danger btn-sm" name="request_action" value="deny">Deny</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'projectpage:dashboard' %}" class="btn btn-dark">Back to Dashboard</a>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

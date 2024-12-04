@@ -65,6 +65,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.uploaded_at}) - {self.comment}"
+
 class AccessRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="access_requests")
     project = models.ForeignKey(Project, on_delete=models.CASCADE ,related_name="access_requests")

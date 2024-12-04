@@ -18,6 +18,8 @@ urlpatterns = [
     path('task_list/', views.TaskListView.as_view(), name='task_list'),
     path('task/<int:pk>/edit/', views.edit_task, name='edit_task'),
     path("request_access/", views.request_access, name="request_access"),
+    path("manage_requests/", views.manage_requests, name="manage_requests"),
+    path("accept_or_deny/", views.accept_or_deny, name="accept_or_deny"),
 
     # Project and File Deletion URLs
     path('project_list/', views.project_list, name='project_list'),

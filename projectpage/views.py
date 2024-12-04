@@ -174,6 +174,33 @@ def request_access(request):
             )
     return redirect("projectpage:all_projects")
 
+@login_required
+def manage_requests(request):
+    cur_user = request.user
+    user_projects = Project.objects.filter(owner=cur_user)
+    requests = AccessRequest.objects.all()
+    context = {
+        "user" : cur_user,
+        "projects" : user_projects,
+        "requests" : requests,
+    }
+    return render(request, "projectpage/manage_requests.html", context)
+
+def accept_or_deny(request):
+    if request.method == "POST":
+        request_action = request.POST.get("request_action")
+        request_id = request.POST.get("request_id")
+        access_request = get_object_or_404(AccessRequest, id=request_id)
+
+        if request_action == "accept":
+            project = access_request.project
+            user_requested = access_request.user
+            project.members.add(user_requested)
+            access_request.delete()
+        else:
+            access_request.delete()
+    return redirect("projectpage:manage_requests")
+
 def admin_login(request):
     return render(request, "registration/admin_login.html")
 

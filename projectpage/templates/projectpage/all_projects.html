@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>Title</th>
+                        <th>Owner</th>
                         <th>Request Access</th>
                     </tr>
                 </thead>
@@ -23,6 +24,7 @@
                     {% for project in projects %}
                         <tr>
                             <td>{{ project.title }}</td>
+                            <td>{{ project.owner }}</td>
                             <td>
                                 {% if project in already_requested %}
                                     <button type="submit" disabled class="btn btn-primary btn-sm">Already Requested</button>
