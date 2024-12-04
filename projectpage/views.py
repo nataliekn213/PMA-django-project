@@ -9,11 +9,13 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.views.decorators.http import require_POST
 from django.db.models import Q
+from django.db.models.functions import Lower
 import boto3
 
 from .models import Task, Document, Project, Membership, CustomUserProfile  # Updated import
 from .forms import TaskForm, DocumentForm, ProjectForm
 from django.http import JsonResponse
+from django.db.models import Min
 
 # Create your views here.
 # def index(request):
@@ -210,18 +212,53 @@ def edit_task(request, pk):
 
 @login_required
 def project_list(request):
-    cur_user = request.user
-    projects = Project.objects.filter(
-        Q(members=cur_user) | Q(owner=cur_user)
-    ).distinct()
+    # cur_user = request.user
+    # sort_by = request.GET.get("sort", "alphabetical")
+    
+    # if sort_by == "date":
+    #     projects = Project.objects.filter(
+    #         Q(members=cur_user) | Q(owner=cur_user)
+    #     ).annotate(
+    #         earliest_task_date=Min("tasks__deadline")
+    #     ).order_by("earliest_task_date", "title").distinct()
+    # elif sort_by == "alphabetical":
+    #     projects = Project.objects.filter(
+    #         Q(members=cur_user) | Q(owner=cur_user)
+    #     ).order_by("title").distinct()
+    # else:
+    #     projects = Project.objects.filter(
+    #         Q(members=cur_user) | Q(owner=cur_user)
+    #     ).order_by("title").distinct()
+
+    # context = {
+    #     "projects": projects,
+    #     "cur_user": cur_user,
+    # }
+    # return render(request, "projectpage/project_list.html", context)
     documents = Document.objects.filter(project__in=projects)
     context = {
         "projects": projects,
-        "cur_user": cur_user,
         "documents": documents,
     }
-    return render(request, 'projectpage/project_list.html', context)
+    sort_option = request.GET.get('sort', 'date')
+    if sort_option == 'date':
+        projects_with_tasks = Project.objects.annotate(
+            earliest_task_due=Min('tasks__deadline')
+        ).filter(earliest_task_due__isnull=False).order_by('earliest_task_due', 'title')
 
+        projects_without_tasks = Project.objects.annotate(
+            earliest_task_due=Min('tasks__deadline')
+        ).filter(earliest_task_due__isnull=True).order_by('title')
+
+        projects = list(projects_with_tasks) + list(projects_without_tasks)
+
+    elif sort_option == 'alphabetical':
+        projects = Project.objects.all().order_by(Lower('title'))
+
+    else:
+        projects = Project.objects.all()
+
+    return render(request, 'projectpage/project_list.html', context)
 
 
 
