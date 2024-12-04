@@ -34,7 +34,7 @@
         <ul>
             {% for document in documents %}
                 <li>
-                    <strong>{{ document.title }}</strong> ({{ document.file.url }})
+                    <strong>{{ document.title }} - From Project: {{ document.project.title }}</strong> (<a href="{{ document.file.url }}" target="_blank">{{ document.file.url }}</a>)
                     <!-- Form for deleting files -->
                     <form action="{% url 'projectpage:delete_file' document.id %}" method="post" style="display:inline;">
                         {% csrf_token %}

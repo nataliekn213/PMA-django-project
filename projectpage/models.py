@@ -54,3 +54,13 @@ class CustomUserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {'PMA Admin' if self.is_pma_admin else 'Common User'}"
+
+# Comments Model
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(default="No commen")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return f"{self.user.username} ({self.uploaded_at}) - {self.comment}"
