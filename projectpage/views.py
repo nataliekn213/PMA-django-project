@@ -235,11 +235,6 @@ def project_list(request):
     #     "cur_user": cur_user,
     # }
     # return render(request, "projectpage/project_list.html", context)
-    documents = Document.objects.filter(project__in=projects)
-    context = {
-        "projects": projects,
-        "documents": documents,
-    }
     sort_option = request.GET.get('sort', 'date')
     if sort_option == 'date':
         projects_with_tasks = Project.objects.annotate(
@@ -256,7 +251,13 @@ def project_list(request):
         projects = Project.objects.all().order_by(Lower('title'))
 
     else:
-        projects = Project.objects.all()
+        projects = Project.objects.all()    
+
+    documents = Document.objects.filter(project__in=projects)
+    context = {
+        "projects": projects,
+        "documents": documents,
+    }
 
     return render(request, 'projectpage/project_list.html', context)
 
