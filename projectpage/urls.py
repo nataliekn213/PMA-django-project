@@ -20,6 +20,9 @@ urlpatterns = [
     path("request_access/", views.request_access, name="request_access"),
     path("manage_requests/", views.manage_requests, name="manage_requests"),
     path("accept_or_deny/", views.accept_or_deny, name="accept_or_deny"),
+    path('project/<int:project_id>/comments/', views.comments, name='comments'),
+    path('project/<int:project_id>/add_comment/', views.add_comment, name='add_comment'),
+
 
     # Project and File Deletion URLs
     path('project_list/', views.project_list, name='project_list'),

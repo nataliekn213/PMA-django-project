@@ -35,9 +35,12 @@
                 <label class="form-label">Project Members</label>
                 <div class="form-check">
                     {% for user in users %}
+                    {%if cur_user != user%}
                         <input type="checkbox" name="members" value="{{ user.id }}" id="user_{{ user.id }}" class="form-check-input">
                         <label for="user_{{ user.id }}" class="form-check-label">{{ user.username }}</label><br>
+                    {% endif %}
                     {% endfor %}
+        
                 </div>
             </div>
 

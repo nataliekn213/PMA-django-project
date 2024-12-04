@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.db.models.functions import Lower
 import boto3
 
-from .models import Task, Document, Project, Membership, CustomUserProfile, AccessRequest # Updated import
+from .models import Task, Document, Project, Membership, CustomUserProfile, AccessRequest, Comment # Updated import
 from .forms import TaskForm, DocumentForm, ProjectForm
 from django.http import JsonResponse
 from django.db.models import Min
@@ -160,6 +160,21 @@ def all_projects(request):
     }
     return render (request, "projectpage/all_projects.html", context)
 
+
+@login_required
+def comments(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    comments = project.comments.all()
+    return render(request, 'projectpage/comments.html', {'project': project, 'comments': comments})
+
+@login_required
+def add_comment(request, project_id):
+    if request.method == "POST":
+        project = get_object_or_404(Project, id=project_id)
+        comment_text = request.POST.get('comment')
+        Comment.objects.create(user=request.user, project=project, comment=comment_text)
+        return redirect('projectpage:comments', project_id=project.id)
+
 @require_POST
 def request_access(request):
     if request.method == "POST":
@@ -213,6 +228,8 @@ def leave_project(request, project_id):
 
         leave_request.members.remove(request.user)
     return redirect("projectpage:project_list")
+
+
 
 def admin_login(request):
     return render(request, "registration/admin_login.html")
@@ -339,7 +356,7 @@ class CreateProjectView(generic.CreateView):
     def get(self, request):
         users = User.objects.all()
         form = ProjectForm()
-        return render(request, self.template_name, {"form": form, "users": users})
+        return render(request, self.template_name, {"form": form, "users": users, "cur_user": request.user})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -351,6 +368,7 @@ class CreateProjectView(generic.CreateView):
             return redirect("projectpage:dashboard")
         else:
             users = User.objects.all()
+
             return render(request, self.template_name, {"form": form, "users": users})
 
 class AddView(generic.CreateView):
