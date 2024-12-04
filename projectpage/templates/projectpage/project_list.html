@@ -17,11 +17,11 @@
             <a href="?sort=alphabetical" class="btn btn-primary mr-2">Sort Alphabetically</a>
             <a href="?sort=date" class="btn btn-secondary">Sort by Soonest Task</a>
         </div>
-
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Description</th>
                     <th>Owner</th>
                     <th>Members</th>
                     <th>Tasks</th>
@@ -33,6 +33,7 @@
                 {% for project in projects %}
                     <tr>
                         <td>{{ project.title }}</td>
+                        <td>{{ project.description }}</td>
                         <td>{{ project.owner.username }}</td>
                         <td>
                             {% for member in project.members.all %}
@@ -51,10 +52,10 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if project.files.exists %}
+                            {% if documents %}
                                 <ul>
-                                    {% for file in project.files.all %}
-                                        <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+                                    {% for document in documents %}
+                                        <li><a href="{{ document.file.url }}" target="_blank">{{ document.title }}</a></li>
                                     {% endfor %}
                                 </ul>
                             {% else %}

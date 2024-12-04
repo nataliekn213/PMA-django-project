@@ -13,7 +13,12 @@ class TaskForm(forms.ModelForm):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['file', 'title', 'description', 'keywords']
+        fields = ['file', 'title', 'description', 'keywords', 'project']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(DocumentForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.filter(members=user)
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
@@ -42,7 +47,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ["title", "members", "tasks"]
+        fields = ["title", "description", "members", "tasks"]
 
     def save(self, commit=True):
         project = super().save(commit=False)

@@ -18,6 +18,7 @@ class Document(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=100, default="No Title")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_projects")
+    description = models.CharField(max_length=100, default='No Description')
     members = models.ManyToManyField(User, through="Membership", related_name="projects")
 
     def is_part_of_project(self, member):
@@ -55,6 +56,15 @@ class CustomUserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {'PMA Admin' if self.is_pma_admin else 'Common User'}"
 
+# Comments Model
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(default="")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return f"{self.user.username} ({self.uploaded_at}) - {self.comment}"
 class AccessRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="access_requests")
     project = models.ForeignKey(Project, on_delete=models.CASCADE ,related_name="access_requests")

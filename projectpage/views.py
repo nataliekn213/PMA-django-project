@@ -58,7 +58,7 @@ def dashboard(request):
 def home(request):
     if not request.user.is_authenticated:
         # Only get limited project info for anonymous users
-        projects = Project.objects.only('title', 'owner')
+        projects = Project.objects.only('title', 'description', 'owner')
     else:
         # Fetch all projects with full details for logged-in users
         projects = Project.objects.all()
@@ -180,21 +180,22 @@ def admin_login(request):
 @login_required
 def upload(request):
     if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
+        form = DocumentForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             file = form.cleaned_data['file']
             file_name = file.name
             file_extension = file_name.split('.')[-1].lower()  # Get the file extension
 
             file_url = file_title = file_description = file_keywords = None  # Initialize variables
-            
+
             if settings.USE_S3:
                 try:
                     document = Document(
                         file=file,
                         title=form.cleaned_data['title'],
                         description=form.cleaned_data['description'],
-                        keywords=form.cleaned_data['keywords']
+                        keywords=form.cleaned_data['keywords'],
+                        project=form.cleaned_data['project']
                     )
                     document.save()
                     file_url = document.file.url
@@ -212,9 +213,11 @@ def upload(request):
                 'file_keywords': file_keywords
             })
     else:
-        form = DocumentForm()
+        form = DocumentForm(user=request.user)
+        projects = form.fields['project'].queryset
 
-    return render(request, 'projectpage/upload.html', {'form': form})
+    return render(request, 'projectpage/upload.html', {'form': form,
+                                                       'projects': projects})
 
 @login_required
 @admin_required
@@ -239,8 +242,6 @@ def edit_task(request, pk):
 
 @login_required
 def project_list(request):
-
- 
     # cur_user = request.user
     # sort_by = request.GET.get("sort", "alphabetical")
     
