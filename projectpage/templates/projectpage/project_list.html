@@ -72,6 +72,13 @@
                                     Delete
                                 </button>
                             </form>
+                            <form method="POST" action="{% url 'projectpage:leave_project' project.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" name="leave" class="btn btn-primary btn-sm" 
+                                    onclick="return confirm('Are you sure you want to leave this project?');">
+                                    Leave
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
