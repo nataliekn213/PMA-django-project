@@ -27,6 +27,7 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Description</th>
                     <th>Owner</th>
                 </tr>
             </thead>
@@ -34,6 +35,7 @@
                 {% for project in projects %}
                     <tr>
                         <td>{{ project.title }}</td>
+                        <td>{{ project.description }}</td>
                         <td>{{ project.owner.username }}</td>
                     </tr>
                 {% empty %}
