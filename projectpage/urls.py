@@ -26,6 +26,7 @@ urlpatterns = [
     path("all_projects/", views.all_projects, name="all_projects"),
     path('project/<int:project_id>/delete/', views.delete_project, name='delete_project'),
     path('file/<int:document_id>/delete/', views.delete_file, name='delete_file'),  # New URL for file deletion
+    path("project_list/leave_project/<int:project_id>", views.leave_project, name="leave_project"),
 
     # Authentication URLs
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),

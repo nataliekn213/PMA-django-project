@@ -72,7 +72,7 @@ def delete_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
     if not request.user == project.owner:
-        return HttpResponseForbidden("You do not have permission to delete this project.")
+        return HttpResponseForbidden("You do not have permission to delete this project. Only the owner can delete a project.")
 
     # Initialize S3 client
     s3 = boto3.client(
@@ -204,6 +204,16 @@ def accept_or_deny(request):
             access_request.delete()
     return redirect("projectpage:manage_requests")
 
+def leave_project(request, project_id):
+    if request.method == "POST":
+        leave_request = get_object_or_404(Project, id=project_id)
+
+        if request.user == leave_request.owner:
+            return HttpResponseForbidden("You cannot leave a project as an owner. Please delete the project instead.")
+
+        leave_request.members.remove(request.user)
+    return redirect("projectpage:project_list")
+
 def admin_login(request):
     return render(request, "registration/admin_login.html")
 
@@ -272,29 +282,6 @@ def edit_task(request, pk):
 
 @login_required
 def project_list(request):
-    # cur_user = request.user
-    # sort_by = request.GET.get("sort", "alphabetical")
-    
-    # if sort_by == "date":
-    #     projects = Project.objects.filter(
-    #         Q(members=cur_user) | Q(owner=cur_user)
-    #     ).annotate(
-    #         earliest_task_date=Min("tasks__deadline")
-    #     ).order_by("earliest_task_date", "title").distinct()
-    # elif sort_by == "alphabetical":
-    #     projects = Project.objects.filter(
-    #         Q(members=cur_user) | Q(owner=cur_user)
-    #     ).order_by("title").distinct()
-    # else:
-    #     projects = Project.objects.filter(
-    #         Q(members=cur_user) | Q(owner=cur_user)
-    #     ).order_by("title").distinct()
-
-    # context = {
-    #     "projects": projects,
-    #     "cur_user": cur_user,
-    # }
-    # return render(request, "projectpage/project_list.html", context)
     cur_user = request.user
     sort_option = request.GET.get('sort', 'date')
     if sort_option == 'date':
