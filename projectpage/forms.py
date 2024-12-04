@@ -47,7 +47,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ["title", "members", "tasks"]
+        fields = ["title", "description", "members", "tasks"]
 
     def save(self, commit=True):
         project = super().save(commit=False)

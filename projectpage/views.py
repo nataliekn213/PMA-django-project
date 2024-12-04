@@ -57,7 +57,7 @@ def dashboard(request):
 def home(request):
     if not request.user.is_authenticated:
         # Only get limited project info for anonymous users
-        projects = Project.objects.only('title', 'owner')
+        projects = Project.objects.only('title', 'description', 'owner')
     else:
         # Fetch all projects with full details for logged-in users
         projects = Project.objects.all()

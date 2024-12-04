@@ -18,6 +18,7 @@ class Document(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=100, default="No Title")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_projects")
+    description = models.CharField(max_length=100, default='No Description')
     members = models.ManyToManyField(User, through="Membership", related_name="projects")
 
     def is_part_of_project(self, member):
@@ -58,9 +59,9 @@ class CustomUserProfile(models.Model):
 # Comments Model
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField(default="No commen")
+    comment = models.TextField(default="")
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name="comments")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="comments")
 
     def __str__(self):
         return f"{self.user.username} ({self.uploaded_at}) - {self.comment}"
