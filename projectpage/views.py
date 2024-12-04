@@ -307,7 +307,9 @@ def project_list(request):
         # projects = Project.objects.all()
         projects = Project.objects.filter(members=cur_user | Q(owner=cur_user))
 
-    return render(request, 'projectpage/project_list.html', {'projects': projects})
+    documents = Document.objects.all()
+
+    return render(request, 'projectpage/project_list.html', {'projects': projects, 'documents': documents})
 
 # class EditTaskView(generic.CreateView):
 #     template_name = 'projectpage/edit_task.html'
