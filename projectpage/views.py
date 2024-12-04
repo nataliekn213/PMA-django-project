@@ -92,7 +92,7 @@ def delete_project(request, project_id):
     project.delete()
 
     # Redirect back to the project list after deletion
-    return redirect('projectpage:admin_dashboard')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 @admin_required
@@ -145,7 +145,7 @@ def delete_file(request, document_id):
     document.delete()
 
     # Redirect back to the admin dashboard
-    return redirect('projectpage:admin_dashboard')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def all_projects(request):
