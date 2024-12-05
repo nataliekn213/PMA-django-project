@@ -75,6 +75,17 @@
                                     onclick="return confirm('Are you sure you want to leave this project?');">
                                     Leave
                                 </button>
+                                
+                            </form>
+                            <form method="GET" action="{% url 'projectpage:comments' project.id %}" style="display: inline;">
+                                <button type="submit" class="btn btn-info btn-sm">Comments</button>
+                            </form>
+                            <form method="POST" action="{% url 'projectpage:delete_project' project.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" 
+                                    onclick="return confirm('Are you sure you want to delete this project?');">
+                                    Delete
+                                </button>
                             </form>
                             <form method="POST" action="{% url 'projectpage:delete_project' project.id %}" style="display: inline;">
                                 {% csrf_token %}
