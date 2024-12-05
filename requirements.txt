@@ -13,6 +13,7 @@ requests
 
 # Package for PostgreSQL
 psycopg2
+django-heroku
 
 # Packages needed for AWS S3
 boto3
