@@ -36,7 +36,7 @@ class ProjectForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=True
+        required=False
     )
 
     tasks = forms.ModelMultipleChoiceField(
